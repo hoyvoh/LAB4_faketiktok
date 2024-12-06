@@ -108,6 +108,14 @@ function App() {
     videoRefs.current[index] = ref;
   };
 
+  const handleAvatarUpdate = (index, newAvatar) => {
+    setVideos((prevVideos) =>
+      prevVideos.map((video, i) =>
+        i === index ? { ...video, profilePic: newAvatar } : video
+      )
+    );
+  };
+
   return (
     <div className="app">
       <div className="container">
@@ -127,6 +135,7 @@ function App() {
             profilePic={video.profilePic}
             setVideoRef={handleVideoRef(index)}
             autoplay={index === 0}
+            onAvatarUpdate={(newAvatar) => handleAvatarUpdate(index, newAvatar)}
           />
         ))}
         <BottomNavbar className="bottom-navbar" />

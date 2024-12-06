@@ -16,6 +16,7 @@ const VideoCard = (props) => {
     profilePic,
     setVideoRef,
     autoplay,
+    onAvatarUpdate,
   } = props;
   const videoRef = useRef(null);
 
@@ -29,7 +30,7 @@ const VideoCard = (props) => {
     if (videoRef.current.paused) {
       videoRef.current.play();
     } else {
-      videoRef.current.paused();
+      videoRef.current.pause();
     }
   };
   return (
@@ -59,6 +60,7 @@ const VideoCard = (props) => {
             comments={comments}
             saves={saves}
             profilePic={profilePic}
+            onAvatarChange={(newAvatar) => onAvatarUpdate(newAvatar)}
           ></FooterRight>
         </div>
       </div>
