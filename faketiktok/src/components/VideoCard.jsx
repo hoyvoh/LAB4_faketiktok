@@ -60,7 +60,7 @@ const VideoCard = (props) => {
             comments={comments}
             saves={saves}
             profilePic={profilePic}
-            onAvatarChange={(newAvatar) => onAvatarUpdate(newAvatar)}
+            onAvatarChange={onAvatarUpdate}
           ></FooterRight>
         </div>
       </div>
