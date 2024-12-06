@@ -10,7 +10,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./FooterRight.css";
 
-function FooterRight({ likes, comments, saves, shares, profilePic }) {
+function FooterRight({
+  likes,
+  comments,
+  saves,
+  shares,
+  profilePic,
+  onAvatarChange,
+}) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
@@ -49,8 +56,25 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
             className="userprofile"
             alt="Profile"
             style={{ width: "45px", height: "45px", color: "#616161" }}
+            onClick={() => document.getElementById("avatar-input").click()}
           />
         )}
+        <input
+          type="file"
+          accept="image/*"
+          id="avatar-input"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                onAvatarChange(reader.result);
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
         <FontAwesomeIcon
           icon={userAddIcon}
           className="userId"
