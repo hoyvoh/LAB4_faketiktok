@@ -7,6 +7,8 @@ import {
   faCommentDots,
   faBookmark,
   faShare,
+  faVolumeMute,
+  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import "./FooterRight.css";
 
@@ -17,16 +19,29 @@ function FooterRight({
   shares,
   profilePic,
   onAvatarChange,
+  videoRef,
 }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
+  const [muted, setMuted] = useState(false);
 
   const handleUserAddClick = () => {
     setUserAddIcon(faCircleCheck);
     setTimeout(() => {
       setUserAddIcon(faCirclePlus); // Reset to original icon
     }, 3000);
+  };
+
+  const handleMuteToggle = () => {
+    setMuted((prevMuted) => {
+      const newMuted = !prevMuted;
+      if (videoRef?.current) {
+        console.log(videoRef.current.muted);
+        videoRef.current.muted = newMuted;
+      }
+      return newMuted;
+    });
   };
 
   const parseLikesCount = (count) => {
@@ -50,12 +65,20 @@ function FooterRight({
   return (
     <div className="footer-right">
       <div className="sidebar-icon">
+        <FontAwesomeIcon
+          icon={muted ? faVolumeMute : faVolumeUp}
+          style={{ width: "25px", height: "25px", color: "white" }}
+          onClick={handleMuteToggle}
+        />
+        <p>{muted ? "Muted" : "Sound"}</p>
+      </div>
+      <div className="sidebar-icon">
         {profilePic && (
           <img
             src={profilePic}
             className="userprofile"
             alt="Profile"
-            style={{ width: "45px", height: "45px", color: "#616161" }}
+            style={{ width: "35px", height: "35px", color: "#616161" }}
             onClick={() => document.getElementById("avatar-input").click()}
           />
         )}
@@ -97,7 +120,7 @@ function FooterRight({
       <div className="sidebar-icon">
         <FontAwesomeIcon
           icon={faCommentDots}
-          style={{ width: "35px", height: "35px", color: "white" }}
+          style={{ width: "25px", height: "25px", color: "white" }}
         />
         <p>{comments}</p>
       </div>
@@ -116,7 +139,7 @@ function FooterRight({
       <div className="sidebar-icon">
         <FontAwesomeIcon
           icon={faShare}
-          style={{ width: "35px", height: "35px", color: "white" }}
+          style={{ width: "25px", height: "25px", color: "white" }}
         />
         <p>{shares}</p>
       </div>
@@ -124,7 +147,7 @@ function FooterRight({
         <img
           src="https://static.thenounproject.com/png/934821-200.png"
           alt="Record Icon"
-          style={{ width: "35px", height: "35px" }}
+          style={{ width: "25px", height: "25px" }}
         />
       </div>
     </div>
