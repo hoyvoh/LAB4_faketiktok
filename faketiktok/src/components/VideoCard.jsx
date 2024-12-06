@@ -61,6 +61,7 @@ const VideoCard = (props) => {
             saves={saves}
             profilePic={profilePic}
             onAvatarChange={onAvatarUpdate}
+            videoRef={videoRef}
           ></FooterRight>
         </div>
       </div>
