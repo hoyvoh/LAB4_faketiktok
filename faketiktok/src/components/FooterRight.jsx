@@ -20,6 +20,7 @@ function FooterRight({
   profilePic,
   onAvatarChange,
   videoRef,
+  videoUrl,
 }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -37,7 +38,6 @@ function FooterRight({
     setMuted((prevMuted) => {
       const newMuted = !prevMuted;
       if (videoRef?.current) {
-        console.log(videoRef.current.muted);
         videoRef.current.muted = newMuted;
       }
       return newMuted;
@@ -56,6 +56,22 @@ function FooterRight({
 
   const formatLikesCount = (count) => {
     return count >= 10000 ? (count / 1000).toFixed(1) + "K" : count;
+  };
+
+  const handleSaveClick = () => {
+    setSaved((prev) => {
+      if (!prev) {
+        navigator.clipboard
+          .writeText(videoUrl)
+          .then(() => {
+            alert("Video link is copied to clipboard!");
+          })
+          .catch((err) => {
+            console.error("Failed to copy video link:", err);
+          });
+      }
+      return !prev;
+    });
   };
 
   const handleLikeClick = () => {
@@ -132,7 +148,7 @@ function FooterRight({
             height: "35px",
             color: saved ? "#ffc107" : "white",
           }}
-          onClick={() => setSaved((prev) => !prev)}
+          onClick={handleSaveClick}
         />
         <p>{saved ? saves + 1 : saves}</p>
       </div>
