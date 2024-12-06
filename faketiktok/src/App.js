@@ -8,8 +8,6 @@ import TopNavbar from "./components/TopNavbar";
 const videoUrls = [
   {
     url: require("./videos/video1.mp4"),
-    profilePic:
-      "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain",
     username: "csjackie",
     description: "Lol nvm #compsci #chatgpt #ai #openai #techtok",
     song: "Original sound - Famed Flames",
@@ -20,8 +18,6 @@ const videoUrls = [
   },
   {
     url: require("./videos/video2.mp4"),
-    profilePic:
-      "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain",
     username: "dailydotdev",
     description:
       "Every developer brain @francesco.ciulla #developerjokes #programming #programminghumor #programmingmemes",
@@ -33,8 +29,6 @@ const videoUrls = [
   },
   {
     url: require("./videos/video3.mp4"),
-    profilePic:
-      "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain",
     username: "wojciechtrefon",
     description:
       "#programming #softwareengineer #vscode #programmerhumor #programmingmemes",
@@ -46,8 +40,6 @@ const videoUrls = [
   },
   {
     url: require("./videos/video4.mp4"),
-    profilePic:
-      "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain",
     username: "faruktutkus",
     description:
       "Wait for the end | Im RTX 4090 TI | #softwareengineer #softwareengineer #coding #codinglife #codingmemes ",
@@ -62,10 +54,17 @@ const videoUrls = [
 function App() {
   const [videos, setVideos] = useState([]);
   const videoRefs = useRef([]);
+  const [profilePic, setProfilePic] = useState(
+    "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain"
+  );
 
   useEffect(() => {
     setVideos(videoUrls);
   }, []);
+
+  const handleAvatarUpdate = (newAvatar) => {
+    setProfilePic(newAvatar); // Update the global avatar state
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -108,14 +107,6 @@ function App() {
     videoRefs.current[index] = ref;
   };
 
-  const handleAvatarUpdate = (index, newAvatar) => {
-    setVideos((prevVideos) =>
-      prevVideos.map((video, i) =>
-        i === index ? { ...video, profilePic: newAvatar } : video
-      )
-    );
-  };
-
   return (
     <div className="app">
       <div className="container">
@@ -132,10 +123,10 @@ function App() {
             comments={video.comments}
             shares={video.shares}
             url={video.url}
-            profilePic={video.profilePic}
+            profilePic={profilePic}
             setVideoRef={handleVideoRef(index)}
             autoplay={index === 0}
-            onAvatarUpdate={(newAvatar) => handleAvatarUpdate(index, newAvatar)}
+            onAvatarUpdate={handleAvatarUpdate}
           />
         ))}
         <BottomNavbar className="bottom-navbar" />
