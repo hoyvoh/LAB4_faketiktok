@@ -58,6 +58,10 @@ function App() {
     "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain"
   );
   const [filteredVideos, setFilteredVideos] = useState([]);
+  const containerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
   useEffect(() => {
     setVideos(videoUrls);
@@ -141,11 +145,67 @@ function App() {
     videoRefs.current[index] = ref;
   };
 
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.pageY - containerRef.current.offsetTop);
+    setScrollTop(containerRef.current.scrollTop);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const y = e.pageY - containerRef.current.offsetTop;
+    const walk = (y - startY) * 2; // Scroll speed multiplier
+    containerRef.current.scrollTop = scrollTop - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+
+    // Snap to nearest video
+    if (containerRef.current) {
+      const videoHeight = window.innerHeight;
+      const currentScroll = containerRef.current.scrollTop;
+      const nearestVideo =
+        Math.round(currentScroll / videoHeight) * videoHeight;
+
+      containerRef.current.scrollTo({
+        top: nearestVideo,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+
+    const videoHeight = window.innerHeight;
+    const currentScroll = containerRef.current.scrollTop;
+    const direction = e.deltaY > 0 ? 1 : -1;
+
+    const nextPosition =
+      direction > 0
+        ? Math.ceil(currentScroll / videoHeight) * videoHeight
+        : Math.floor(currentScroll / videoHeight) * videoHeight;
+
+    containerRef.current.scrollTo({
+      top: nextPosition,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="app">
-      <div className="container">
+      <div
+        ref={containerRef}
+        className="container"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
+      >
         <TopNavbar className="top-navbar" onSearch={handleSearch} />
-
         {filteredVideos.map((video, index) => (
           <VideoCard
             key={index}
