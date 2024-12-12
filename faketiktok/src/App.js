@@ -57,23 +57,32 @@ function App() {
   const [profilePic, setProfilePic] = useState(
     "https://th.bing.com/th/id/OIP.Xw2rxMmQ9g2ZAFMjomWnHAAAAA?w=220&h=248&rs=1&pid=ImgDetMain"
   );
+  const [filteredVideos, setFilteredVideos] = useState([]);
 
   useEffect(() => {
     setVideos(videoUrls);
+    setFilteredVideos(videoUrls);
   }, []);
 
   const handleAvatarUpdate = (newAvatar) => {
     setProfilePic(newAvatar); // Update the global avatar state
   };
 
-  useEffect(() => {
+  // Move the observer setup to a separate function
+  const setupIntersectionObserver = () => {
+    // Pause all videos first
+    videoRefs.current.forEach((videoRef) => {
+      if (videoRef) {
+        videoRef.pause();
+      }
+    });
+
     const observerOptions = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.8, // Adjust this value to change the scroll trigger point
+      threshold: 0.8,
     };
 
-    // This function handles the intersection of videos
     const handleIntersection = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -91,16 +100,41 @@ function App() {
       observerOptions
     );
 
-    // We observe each video reference to trigger play/pause
+    // Observe only valid video refs
     videoRefs.current.forEach((videoRef) => {
-      observer.observe(videoRef);
+      if (videoRef) {
+        observer.observe(videoRef);
+      }
     });
 
-    // We disconnect the observer when the component is unmounted
+    return observer;
+  };
+
+  useEffect(() => {
+    const observer = setupIntersectionObserver();
     return () => {
       observer.disconnect();
     };
-  }, [videos]);
+  }, [filteredVideos]);
+
+  const handleSearch = (searchTerm) => {
+    if (!searchTerm) {
+      setFilteredVideos(videos);
+      return true;
+    }
+
+    const filtered = videos.filter((video) =>
+      video.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      // No results found
+      return false;
+    }
+
+    setFilteredVideos(filtered);
+    return true;
+  };
 
   // This function handles the reference of each video
   const handleVideoRef = (index) => (ref) => {
@@ -110,9 +144,9 @@ function App() {
   return (
     <div className="app">
       <div className="container">
-        <TopNavbar className="top-navbar" />
-        {/* Here we map over the videos array and create VideoCard components */}
-        {videos.map((video, index) => (
+        <TopNavbar className="top-navbar" onSearch={handleSearch} />
+
+        {filteredVideos.map((video, index) => (
           <VideoCard
             key={index}
             username={video.username}

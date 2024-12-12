@@ -26,7 +26,7 @@ function FooterRight({
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [showShareSheet, setShowShareSheet] = useState(false);
 
   const handleUserAddClick = () => {
