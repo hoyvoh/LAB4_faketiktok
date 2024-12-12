@@ -11,6 +11,7 @@ import {
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import "./FooterRight.css";
+import ShareSheet from "./ShareSheet";
 
 function FooterRight({
   likes,
@@ -25,7 +26,8 @@ function FooterRight({
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [showShareSheet, setShowShareSheet] = useState(false);
 
   const handleUserAddClick = () => {
     setUserAddIcon(faCircleCheck);
@@ -78,94 +80,107 @@ function FooterRight({
     setLiked((prevLiked) => !prevLiked);
   };
 
+  const handleShareClick = () => {
+    setShowShareSheet(true);
+  };
+
   return (
-    <div className="footer-right">
-      <div className="sidebar-icon">
-        <FontAwesomeIcon
-          icon={muted ? faVolumeMute : faVolumeUp}
-          style={{ width: "25px", height: "25px", color: "white" }}
-          onClick={handleMuteToggle}
-        />
-        <p>{muted ? "Muted" : "Sound"}</p>
-      </div>
-      <div className="sidebar-icon">
-        {profilePic && (
-          <img
-            src={profilePic}
-            className="userprofile"
-            alt="Profile"
-            style={{ width: "35px", height: "35px", color: "#616161" }}
-            onClick={() => document.getElementById("avatar-input").click()}
+    <div className="footer-right-container">
+      <div className="footer-right">
+        <div className="sidebar-icon">
+          {profilePic && (
+            <img
+              src={profilePic}
+              className="userprofile"
+              alt="Profile"
+              style={{ width: "35px", height: "35px", color: "#616161" }}
+              onClick={() => document.getElementById("avatar-input").click()}
+            />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            id="avatar-input"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  onAvatarChange(reader.result);
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
           />
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          id="avatar-input"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = () => {
-                onAvatarChange(reader.result);
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-        />
-        <FontAwesomeIcon
-          icon={userAddIcon}
-          className="userId"
-          style={{ width: "15px", height: "15px", color: "#FF0000" }}
-          onClick={handleUserAddClick}
-        />
+          <FontAwesomeIcon
+            icon={userAddIcon}
+            className="userId"
+            style={{ width: "15px", height: "15px", color: "#FF0000" }}
+            onClick={handleUserAddClick}
+          />
+        </div>
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={faHeart}
+            style={{
+              width: "35px",
+              height: "35px",
+              color: liked ? "#FF0000" : "white",
+            }}
+            onClick={handleLikeClick}
+          />
+          <p>{formatLikesCount(parseLikesCount(likes) + (liked ? 1 : 0))}</p>
+        </div>
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={faCommentDots}
+            style={{ width: "25px", height: "25px", color: "white" }}
+          />
+          <p>{comments}</p>
+        </div>
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={faBookmark}
+            style={{
+              width: "35px",
+              height: "35px",
+              color: saved ? "#ffc107" : "white",
+            }}
+            onClick={handleSaveClick}
+          />
+          <p>{saved ? saves + 1 : saves}</p>
+        </div>
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={faShare}
+            style={{ width: "25px", height: "25px", color: "white" }}
+            onClick={handleShareClick}
+          />
+          <p>{shares}</p>
+        </div>
+        <div className="sidebar-icon">
+          <FontAwesomeIcon
+            icon={muted ? faVolumeMute : faVolumeUp}
+            style={{ width: "25px", height: "25px", color: "white" }}
+            onClick={handleMuteToggle}
+          />
+          <p>{muted ? "Muted" : "Sound"}</p>
+        </div>
+        <div className="sidebar-icon record">
+          <img
+            src="https://static.thenounproject.com/png/934821-200.png"
+            alt="Record Icon"
+            style={{ width: "25px", height: "25px" }}
+          />
+        </div>
       </div>
-      <div className="sidebar-icon">
-        <FontAwesomeIcon
-          icon={faHeart}
-          style={{
-            width: "35px",
-            height: "35px",
-            color: liked ? "#FF0000" : "white",
-          }}
-          onClick={handleLikeClick}
+      {showShareSheet && (
+        <ShareSheet
+          isVisible={showShareSheet}
+          onClose={() => setShowShareSheet(false)}
         />
-        <p>{formatLikesCount(parseLikesCount(likes) + (liked ? 1 : 0))}</p>
-      </div>
-      <div className="sidebar-icon">
-        <FontAwesomeIcon
-          icon={faCommentDots}
-          style={{ width: "25px", height: "25px", color: "white" }}
-        />
-        <p>{comments}</p>
-      </div>
-      <div className="sidebar-icon">
-        <FontAwesomeIcon
-          icon={faBookmark}
-          style={{
-            width: "35px",
-            height: "35px",
-            color: saved ? "#ffc107" : "white",
-          }}
-          onClick={handleSaveClick}
-        />
-        <p>{saved ? saves + 1 : saves}</p>
-      </div>
-      <div className="sidebar-icon">
-        <FontAwesomeIcon
-          icon={faShare}
-          style={{ width: "25px", height: "25px", color: "white" }}
-        />
-        <p>{shares}</p>
-      </div>
-      <div className="sidebar-icon record">
-        <img
-          src="https://static.thenounproject.com/png/934821-200.png"
-          alt="Record Icon"
-          style={{ width: "25px", height: "25px" }}
-        />
-      </div>
+      )}
     </div>
   );
 }
