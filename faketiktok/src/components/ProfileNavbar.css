@@ -1,0 +1,24 @@
+.profile-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+.back-button, .notification-button, .more-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+} 
